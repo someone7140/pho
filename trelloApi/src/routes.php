@@ -6,3 +6,4 @@ use controller\LoginController;
 
 // Routes
 $app->get('/login', \controller\LoginController::class . ':login');
+$app->get('/auth_callback', \controller\LoginController::class . ':auth_callback');
