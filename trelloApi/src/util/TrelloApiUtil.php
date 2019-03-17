@@ -36,6 +36,18 @@ class TrelloApiUtil
 
   // リクエストの送信
   public static function sendRequest(TokenCredentials $tokenCredentials, String $type, String $path){
-    return self::getOauth1()->setTokenCredentials($tokenCredentials)->request($type, $path);
+    $response = self::getOauth1()->setTokenCredentials($tokenCredentials)->request($type, $path);
+    return $response->getBody()->getContents();
+  }
+
+  // membersのjsonからusernameを取得
+  public static function get_username(String $members_json){
+    $arr = json_decode($members_json);
+    return $arr->username;
+  }
+  // membersのjsonからfullNameを取得
+  public static function get_fullName(String $members_json){
+    $arr = json_decode($members_json);
+    return $arr->fullName;
   }
 }

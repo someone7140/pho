@@ -22,11 +22,12 @@ class LoginController
   }
 
   public function auth_callback(Request $request, Response $response){
+    $responseCotentsFromTrello = null;
     // セッションにすでにtokenが設定してある。
     if (isset($_SESSION['token_credentials'])) {
       $tokenCredentials = unserialize($_SESSION['token_credentials']);
       // 自ユーザー情報を取得
-      $response = TrelloApiUtil::sendRequest($tokenCredentials, 'GET', 'members/me');
+      $responseCotentsFromTrello = TrelloApiUtil::sendRequest($tokenCredentials, 'GET', 'members/me');
     // GETの引数でoauth_tokenとoauth_verifierがある
     } else if (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
       // TemporaryCredentialを取得してsessionから破棄
@@ -36,12 +37,20 @@ class LoginController
       $tokenCredentials = TrelloApiUtil::getRequestTokenCredentials($temporaryCredentials, $_GET['oauth_token'], $_GET['oauth_verifier']);
       $_SESSION['token_credentials'] = serialize($tokenCredentials);
       // 自ユーザー情報を取得
-      $response = TrelloApiUtil::sendRequest($tokenCredentials, 'GET', 'members/me');
+      $responseCotentsFromTrello = TrelloApiUtil::sendRequest($tokenCredentials, 'GET', 'members/me');
     // それ以外はエラー
     } else {
-      $response = $response->withJson(["message" => "Authentication_NG"], 401);
+      header("Content-Type: application/json; charset=utf-8");
+      return $response->withJson(["message" => "Authentication_NG"], 401);
     }
+    // ユーザ情報のjsonを文字列化
+    $encoded_json = mb_convert_encoding($responseCotentsFromTrello, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
+    // ユーザ名を取得してセッションへ
+    $username = TrelloApiUtil::get_username($encoded_json);
+    $_SESSION['username'] = serialize($username);
+    // fullnameを取得
+    $fullName = TrelloApiUtil::get_fullName($encoded_json);
     header("Content-Type: application/json; charset=utf-8");
-    return $response;
+    return $response->withJson(["username" => $username, "fullName" => $fullName], 200);
   }
 }
