@@ -14,7 +14,7 @@ class TrelloApiUtil
     $oauth1 = ProviderFactory::trello([
       'client_credentials_identifier' => TRELLO_API_KEY,
       'client_credentials_secret' => TRELLO_SECRET,
-      'callback_uri' => 'http://localhost:8000/auth_callback',
+      'callback_uri' => CALL_BACK_URI_FROM_TRELLO,
     ]);
     return $oauth1;
   }
