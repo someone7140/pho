@@ -22,7 +22,7 @@ Route::middleware(['cors'])->group(function () {
 
     Route::match (['get', 'options'], 'event/findByUser', 'EventController@findByUser')->name('event.findByUser');
 
-    Route::group(['middleware' => ['auth']], function () {
+    Route::group(['middleware' => ['auth:api']], function () {
         // 認証が必要なメソッド
         Route::match (['get', 'options'], 'user/user_info', 'UserController@user_info')->name('user.user_info');
     });

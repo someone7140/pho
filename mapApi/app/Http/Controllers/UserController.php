@@ -7,6 +7,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -40,10 +41,16 @@ class UserController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
             if($user->status == config('const_user_status.active')) {
+                // tokenの生成
+                $token = Str::random(60);
+                $request->user()->forceFill([
+                    'api_token' => hash('sha256', $token),
+                ])->save();
                 // 認証に成功
                 $response = new UserResponse();
                 $response->status = config('const_http_status.OK_200');
                 $response->name = $user->name;
+                $response->token = $token;
                 return $response->return_response();
             } else {
                 // 認証に失敗
