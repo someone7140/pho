@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\OnlyApiTokenRequest;
 use App\Models\Db\Increment;
 use App\Models\Response\CommonResponse;
 use App\Models\Response\UserResponse;
@@ -40,17 +41,17 @@ class UserController extends Controller
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
+            // 認証に成功
             if($user->status == config('const_user_status.active')) {
                 // tokenの生成
-                $token = Str::random(60);
+                $api_token = Str::random(60);
                 $request->user()->forceFill([
-                    'api_token' => hash('sha256', $token),
+                    'api_token' => hash('sha256', $api_token),
                 ])->save();
-                // 認証に成功
                 $response = new UserResponse();
                 $response->status = config('const_http_status.OK_200');
                 $response->name = $user->name;
-                $response->token = $token;
+                $response->api_token = $api_token;
                 return $response->return_response();
             } else {
                 // 認証に失敗
@@ -68,7 +69,7 @@ class UserController extends Controller
             return $response->return_response();
         }
     }
-    public function user_info(Request $request)
+    public function user_info(OnlyApiTokenRequest $request)
     {
         $user = Auth::user();
         $response = new UserResponse();

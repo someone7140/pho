@@ -11,4 +11,5 @@ return [
     'ERROR_PASSWORD_CONFIRM_SAME' => '再入力しているパスワードが異なります。',
     'ERROR_LOGIN' => 'メールアドレスもしくはパスワードが異なります。',
     'ERROR_AUTH' => 'ログインが必要です。',
+    'ERROR_API_TOKEN_EXPIRE' => '再度ログインしてください。',
 ];

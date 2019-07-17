@@ -56,8 +56,8 @@ class Handler extends ExceptionHandler
     {
         $response = new CommonResponse();
         $response->status = config('const_http_status.UNAUTHORIZED_401');
-        $response->message = [config('const_message.ERROR_AUTH')];
-        header("Access-Control-Allow-Origin:" . config('const_api.VIEW_DOMAIN'));
+        $response->message = new \stdClass();
+        $response->message->api_token = [config('const_message.ERROR_AUTH')];
         return response()->json( $response, config('const_http_status.OK_200'));
     }
 
