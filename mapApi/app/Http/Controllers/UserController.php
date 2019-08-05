@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 use App\User;
-use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\OnlyApiTokenRequest;
 use App\Models\Db\Increment;
@@ -22,7 +22,7 @@ use App\Models\Response\UserResponse;
 class UserController extends Controller
 {
     use SendsPasswordResetEmails;
-    public function create(CreateUserRequest $request)
+    public function create(UserRequest $request)
     {
         // incrementでuser_idのキーを取得
         $increment = Increment::where('key', 'user_id')->first();
@@ -32,6 +32,19 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->status = config('const_user_status.active');
+        $user->save();
+        $response = new CommonResponse();
+        $response->status = config('const_http_status.OK_200');
+        return $response->return_response();
+    }
+    public function update(UserRequest $request)
+    {
+        $user = Auth::user();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if (isset($request->password) && mb_strlen($request->$password) > 0) {
+            $user->email = $request->$password;
+        }
         $user->save();
         $response = new CommonResponse();
         $response->status = config('const_http_status.OK_200');

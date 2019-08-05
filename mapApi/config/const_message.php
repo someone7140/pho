@@ -12,4 +12,6 @@ return [
     'ERROR_LOGIN' => 'メールアドレスもしくはパスワードが異なります。',
     'ERROR_AUTH' => 'ログインが必要です。',
     'ERROR_API_TOKEN_EXPIRE' => '再度ログインしてください。',
+    'ERROR_EVENT_TITLE_REQUIRED' => 'タイトルを入力してください。',
+    'ERROR_EVENT_DETAIL_REQUIRED' => '詳細を入力してください。',
 ];
