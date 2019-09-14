@@ -20,7 +20,7 @@ class ApiTokenExpireCheck implements Rule
         $register_date = $user->updated_at;
         $now = new \DateTime();
         $diff = $now->diff($register_date);
-        return $diff->days < EXPIRE_DAY;
+        return $diff->i < EXPIRE_DAY;
     }
 
     public function message()

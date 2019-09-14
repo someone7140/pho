@@ -40,6 +40,9 @@ class UserController extends Controller
     public function update(UserRequest $request)
     {
         $user = Auth::user();
+        if ($request->file('image_file')->isValid([])) {
+            $aaa = file_get_contents($request->file('image_file'));
+        }
         $user->name = $request->name;
         $user->email = $request->email;
         if (isset($request->password) && mb_strlen($request->$password) > 0) {
