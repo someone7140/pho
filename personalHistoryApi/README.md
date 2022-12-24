@@ -1,0 +1,3 @@
+-   ローカルでの API サーバ実行は`APP_ENV=local php artisan serve`
+-   ローカルでのマイグレーション実行は`APP_ENV=local php artisan migrate`
+-   ローカルでの seeder 実行は`APP_ENV=local php artisan db:seed`
